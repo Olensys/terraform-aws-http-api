@@ -1,6 +1,6 @@
-# __NAME__
+# terraform-aws-http-api
 
-__DESCRIPTION__
+API Gateway HTTP API with Lambda proxy routes, access logging, throttling, CORS and an optional custom domain
 
 ## Opinions
 
@@ -10,7 +10,7 @@ __DESCRIPTION__
 
 ```hcl
 module "this" {
-  source = "git::https://github.com/Olensys/__NAME__.git?ref=v1.0.0"
+  source = "git::https://github.com/Olensys/terraform-aws-http-api.git?ref=v1.0.0"
 
   name = "example"
   context = {
