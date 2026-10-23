@@ -31,10 +31,10 @@ variable "create" {
 }
 
 variable "routes" {
-  description = "Routes keyed by route key, for example \"GET /health\" or \"$default\". Each route proxies to a Lambda function (payload format 2.0). authorization is the API Gateway authorization type (NONE, JWT, AWS_IAM or CUSTOM); authorizer_id is required for JWT and CUSTOM."
+  description = "Routes keyed by route key, for example \"GET /health\" or \"$default\". Each route proxies to a Lambda function (payload format 2.0). authorization is required on every route and is the API Gateway authorization type (NONE, JWT, AWS_IAM or CUSTOM); authorizer_id is required for JWT and CUSTOM."
   type = map(object({
     lambda_arn    = string
-    authorization = optional(string, "NONE")
+    authorization = optional(string)
     authorizer_id = optional(string)
   }))
   validation {
@@ -42,8 +42,8 @@ variable "routes" {
     error_message = "Route keys must look like \"GET /path\" with method GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS or ANY, or be \"$default\"."
   }
   validation {
-    condition     = alltrue([for r in values(var.routes) : contains(["NONE", "JWT", "AWS_IAM", "CUSTOM"], r.authorization)])
-    error_message = "Route authorization must be one of NONE, JWT, AWS_IAM, CUSTOM."
+    condition     = alltrue([for r in values(var.routes) : r.authorization != null && contains(["NONE", "JWT", "AWS_IAM", "CUSTOM"], r.authorization)])
+    error_message = "Every route must set authorization explicitly, one of NONE, JWT, AWS_IAM, CUSTOM."
   }
 }
 

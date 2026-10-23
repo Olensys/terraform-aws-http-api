@@ -4,6 +4,7 @@ API Gateway HTTP API with Lambda proxy routes, access logging, throttling, CORS 
 
 ## Opinions
 
+- Every route states its `authorization` explicitly; `NONE` is an opt-in.
 - HTTP API (`protocol_type = "HTTP"`), not REST. Lambda proxy integrations use payload format 2.0 with a 12 second integration timeout.
 - Each route gets its own `aws_lambda_permission` for `apigateway.amazonaws.com`, scoped to this API's execution ARN.
 - Access logging is always on, as one JSON line per request (request id, source IP, time, method, route key, status, protocol, response length, integration error message) in a log group with `log_retention_days` retention (default 30).
@@ -16,21 +17,21 @@ API Gateway HTTP API with Lambda proxy routes, access logging, throttling, CORS 
 ## Usage
 
 ```hcl
-module "this" {
-  source = "git::https://github.com/Olensys/terraform-aws-http-api.git?ref=v1.0.0"
+module "naming" {
+  source  = "git::https://github.com/Olensys/terraform-null-naming.git?ref=v1.0.1"
+  context = var.context
+}
 
-  name = "example"
-  context = {
-    organization = "olensys"
-    environment  = "dev"
-    application  = "example"
-    owner        = "platform"
-    cost_center  = "eng"
-  }
+module "http_api" {
+  source  = "git::https://github.com/Olensys/terraform-aws-http-api.git?ref=v1.1.0"
+  name    = module.naming.name
+  context = var.context
 
   routes = {
-    "GET /health" = { lambda_arn = "arn:aws:lambda:eu-west-1:123456789012:function:health" }
+    "GET /health" = { lambda_arn = "arn:aws:lambda:eu-west-1:123456789012:function:health", authorization = "NONE" }
   }
+
+  tags = module.naming.tags
 }
 ```
 
@@ -66,7 +67,7 @@ module "this" {
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_context"></a> [context](#input\_context) | Deployment context used for naming, tagging and environment-dependent defaults. | <pre>object({<br/>    organization = string<br/>    environment  = string<br/>    application  = string<br/>    component    = optional(string)<br/>    owner        = string<br/>    cost_center  = string<br/>    extra_tags   = optional(map(string), {})<br/>  })</pre> | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Resource name. Lowercase letters, digits and hyphens. | `string` | n/a | yes |
-| <a name="input_routes"></a> [routes](#input\_routes) | Routes keyed by route key, for example "GET /health" or "$default". Each route proxies to a Lambda function (payload format 2.0). authorization is the API Gateway authorization type (NONE, JWT, AWS\_IAM or CUSTOM); authorizer\_id is required for JWT and CUSTOM. | <pre>map(object({<br/>    lambda_arn    = string<br/>    authorization = optional(string, "NONE")<br/>    authorizer_id = optional(string)<br/>  }))</pre> | n/a | yes |
+| <a name="input_routes"></a> [routes](#input\_routes) | Routes keyed by route key, for example "GET /health" or "$default". Each route proxies to a Lambda function (payload format 2.0). authorization is required on every route and is the API Gateway authorization type (NONE, JWT, AWS\_IAM or CUSTOM); authorizer\_id is required for JWT and CUSTOM. | <pre>map(object({<br/>    lambda_arn    = string<br/>    authorization = optional(string)<br/>    authorizer_id = optional(string)<br/>  }))</pre> | n/a | yes |
 | <a name="input_cors"></a> [cors](#input\_cors) | Optional CORS configuration. Null leaves CORS off. | <pre>object({<br/>    allow_origins = list(string)<br/>    allow_methods = optional(list(string), ["GET", "POST", "OPTIONS"])<br/>    allow_headers = optional(list(string), ["content-type", "authorization"])<br/>  })</pre> | `null` | no |
 | <a name="input_create"></a> [create](#input\_create) | Whether to create any resources. Set false to create nothing. | `bool` | `true` | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | Optional custom domain: name and the ARN of an ACM certificate in the API's region. DNS records are the caller's job (see domain\_target and domain\_hosted\_zone\_id outputs). | <pre>object({<br/>    name            = string<br/>    certificate_arn = string<br/>  })</pre> | `null` | no |

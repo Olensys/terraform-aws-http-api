@@ -30,9 +30,9 @@ variables {
   }
   name = "example"
   routes = {
-    "GET /health"  = { lambda_arn = "arn:aws:lambda:eu-west-1:123456789012:function:health" }
-    "POST /orders" = { lambda_arn = "arn:aws:lambda:eu-west-1:123456789012:function:orders" }
-    "$default"     = { lambda_arn = "arn:aws:lambda:eu-west-1:123456789012:function:fallback" }
+    "GET /health"  = { lambda_arn = "arn:aws:lambda:eu-west-1:123456789012:function:health", authorization = "NONE" }
+    "POST /orders" = { lambda_arn = "arn:aws:lambda:eu-west-1:123456789012:function:orders", authorization = "NONE" }
+    "$default"     = { lambda_arn = "arn:aws:lambda:eu-west-1:123456789012:function:fallback", authorization = "NONE" }
   }
 }
 
@@ -52,11 +52,6 @@ run "test_route_per_key_with_permission" {
   assert {
     condition     = alltrue([for p in aws_lambda_permission.routes : p.principal == "apigateway.amazonaws.com"])
     error_message = "Permissions must be granted to the API Gateway principal."
-  }
-
-  assert {
-    condition     = output.route_config["GET /health"].authorization == "NONE"
-    error_message = "authorization must default to NONE."
   }
 }
 
@@ -151,7 +146,7 @@ run "test_route_key_validation" {
   command = plan
 
   variables {
-    routes = { "FETCH /x" = { lambda_arn = "arn:aws:lambda:eu-west-1:123456789012:function:x" } }
+    routes = { "FETCH /x" = { lambda_arn = "arn:aws:lambda:eu-west-1:123456789012:function:x", authorization = "NONE" } }
   }
 
   expect_failures = [var.routes]
@@ -184,4 +179,24 @@ run "test_authorizer_required_for_jwt" {
   }
 
   expect_failures = [output.id]
+}
+
+run "test_authorization_required" {
+  command = plan
+
+  variables {
+    routes = { "GET /x" = { lambda_arn = "arn:aws:lambda:eu-west-1:123456789012:function:x" } }
+  }
+
+  expect_failures = [var.routes]
+}
+
+run "test_authorization_enum_validation" {
+  command = plan
+
+  variables {
+    routes = { "GET /x" = { lambda_arn = "arn:aws:lambda:eu-west-1:123456789012:function:x", authorization = "OPEN" } }
+  }
+
+  expect_failures = [var.routes]
 }

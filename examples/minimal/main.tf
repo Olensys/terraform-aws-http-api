@@ -24,7 +24,7 @@ module "this" {
   }
 
   routes = {
-    "GET /health" = { lambda_arn = var.lambda_arn }
+    "GET /health" = { lambda_arn = var.lambda_arn, authorization = "NONE" }
   }
 }
 
