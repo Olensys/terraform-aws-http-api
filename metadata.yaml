@@ -4,7 +4,7 @@ tier: capability          # primitive | capability | blueprint
 maturity: experimental    # experimental | stable | deprecated
 description: API Gateway HTTP API with Lambda proxy routes, access logging, throttling, CORS and an optional custom domain
 owners: [platform]
-upstream: null            # e.g. "terraform-aws-modules/s3-bucket/aws 5.17.0"
+upstream: "terraform-aws-modules/apigateway-v2/aws 6.1.1"
 pairs_with: null          # e.g. "terraform-google-gcs-bucket"
 registry_name: terraform-aws-http-api
 deprecated: null          # { removal: YYYY-MM-DD, replacement: <repo> }
