@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/Olensys/terraform-aws-http-api/compare/v1.1.1...v1.1.2) (2026-10-24)
+
+
+### Bug Fixes
+
+* **examples:** unique application slug so concurrent integration runs do not collide ([#3](https://github.com/Olensys/terraform-aws-http-api/issues/3)) ([66a8607](https://github.com/Olensys/terraform-aws-http-api/commit/66a8607b378a5dbd855ab71289cb54f635de9b58))
+
 ## [1.1.1](https://github.com/Olensys/terraform-aws-http-api/compare/v1.1.0...v1.1.1) (2026-10-24)
 
 
