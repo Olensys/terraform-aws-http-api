@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/Olensys/terraform-aws-http-api/compare/v1.1.0...v1.1.1) (2026-10-24)
+
+
+### Bug Fixes
+
+* run integration on change and weekly instead of nightly ([3326717](https://github.com/Olensys/terraform-aws-http-api/commit/33267172616f99e74269f3c18f589d489664aae8))
+
 ## 1.1.0
 
 ### Behaviour changes
