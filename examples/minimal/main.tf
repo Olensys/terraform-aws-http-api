@@ -14,11 +14,11 @@ variable "lambda_arn" {
 module "this" {
   source = "../../"
 
-  name = "example"
+  name = "olensys-test-httpapi"
   context = {
     organization = "olensys"
     environment  = "dev"
-    application  = "example"
+    application  = "httpapi"
     owner        = "platform"
     cost_center  = "eng"
   }
