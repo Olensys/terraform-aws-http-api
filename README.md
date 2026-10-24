@@ -35,6 +35,10 @@ module "http_api" {
 }
 ```
 
+## Integration test
+
+The nightly integration run applies `examples/minimal` and needs the repository variable `TF_VAR_lambda_arn` set to the ARN of an existing Lambda function.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
