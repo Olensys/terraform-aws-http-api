@@ -37,7 +37,7 @@ module "http_api" {
 
 ## Integration test
 
-The nightly integration run applies `examples/minimal`, which provisions its own Lambda function and IAM role, so no `TF_VAR_lambda_arn` or other input is needed.
+The integration run (on push to main and weekly on Sunday) applies `examples/minimal`, which provisions its own Lambda function and IAM role, so no `TF_VAR_lambda_arn` or other input is needed.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

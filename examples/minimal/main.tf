@@ -34,6 +34,7 @@ resource "aws_iam_role_policy_attachment" "basic" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+#trivy:ignore:AVD-AWS-0066 test fixture; tracing adds nothing to the example
 resource "aws_lambda_function" "this" {
   function_name    = "olensys-test-httpapi-fn"
   role             = aws_iam_role.lambda.arn
@@ -43,9 +44,7 @@ resource "aws_lambda_function" "this" {
   filename         = data.archive_file.handler.output_path
   source_code_hash = data.archive_file.handler.output_base64sha256
 
-  tracing_config {
-    mode = "Active"
-  }
+  depends_on = [aws_iam_role_policy_attachment.basic]
 }
 
 module "this" {
