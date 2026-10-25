@@ -5,4 +5,9 @@ run "apply_minimal" {
   module {
     source = "./examples/minimal"
   }
+
+  assert {
+    condition     = output.endpoint != null
+    error_message = "Expected the example to expose an invoke URL."
+  }
 }
