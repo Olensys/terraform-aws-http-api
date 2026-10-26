@@ -200,3 +200,58 @@ run "test_authorization_enum_validation" {
 
   expect_failures = [var.routes]
 }
+
+run "test_integration_timeout_default" {
+  command = plan
+
+  assert {
+    condition     = alltrue([for i in values(module.this.integrations) : i.timeout_milliseconds == 12000])
+    error_message = "Every integration must default to a 12000 ms timeout."
+  }
+}
+
+run "test_integration_timeout_override" {
+  command = plan
+
+  variables {
+    integration_timeout_ms = 30000
+  }
+
+  assert {
+    condition     = length(module.this.integrations) == 3 && alltrue([for i in values(module.this.integrations) : i.timeout_milliseconds == 30000])
+    error_message = "integration_timeout_ms must apply to every integration."
+  }
+}
+
+run "test_integration_timeout_bounds_accepted" {
+  command = plan
+
+  variables {
+    integration_timeout_ms = 50
+  }
+
+  assert {
+    condition     = alltrue([for i in values(module.this.integrations) : i.timeout_milliseconds == 50])
+    error_message = "The 50 ms lower bound must be accepted."
+  }
+}
+
+run "test_integration_timeout_below_minimum" {
+  command = plan
+
+  variables {
+    integration_timeout_ms = 49
+  }
+
+  expect_failures = [var.integration_timeout_ms]
+}
+
+run "test_integration_timeout_above_maximum" {
+  command = plan
+
+  variables {
+    integration_timeout_ms = 30001
+  }
+
+  expect_failures = [var.integration_timeout_ms]
+}

@@ -5,7 +5,7 @@ API Gateway HTTP API with Lambda proxy routes, access logging, throttling, CORS 
 ## Opinions
 
 - Every route states its `authorization` explicitly; `NONE` is an opt-in.
-- HTTP API (`protocol_type = "HTTP"`), not REST. Lambda proxy integrations use payload format 2.0 with a 12 second integration timeout.
+- HTTP API (`protocol_type = "HTTP"`), not REST. Lambda proxy integrations use payload format 2.0 with a 12 second integration timeout by default (`integration_timeout_ms`, 50 to 30000 ms).
 - Each route gets its own `aws_lambda_permission` for `apigateway.amazonaws.com`, scoped to this API's execution ARN.
 - Access logging is always on, as one JSON line per request (request id, source IP, time, method, route key, status, protocol, response length, integration error message) in a log group with `log_retention_days` retention (default 30).
 - Default route throttling is burst 100 and rate 50, with detailed metrics enabled. Per-field overrides via `throttling`.
@@ -75,6 +75,7 @@ The integration run (on push to main and weekly on Sunday) applies `examples/min
 | <a name="input_cors"></a> [cors](#input\_cors) | Optional CORS configuration. Null leaves CORS off. | <pre>object({<br/>    allow_origins = list(string)<br/>    allow_methods = optional(list(string), ["GET", "POST", "OPTIONS"])<br/>    allow_headers = optional(list(string), ["content-type", "authorization"])<br/>  })</pre> | `null` | no |
 | <a name="input_create"></a> [create](#input\_create) | Whether to create any resources. Set false to create nothing. | `bool` | `true` | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | Optional custom domain: name and the ARN of an ACM certificate in the API's region. DNS records are the caller's job (see domain\_target and domain\_hosted\_zone\_id outputs). | <pre>object({<br/>    name            = string<br/>    certificate_arn = string<br/>  })</pre> | `null` | no |
+| <a name="input_integration_timeout_ms"></a> [integration\_timeout\_ms](#input\_integration\_timeout\_ms) | Integration timeout in milliseconds applied to every route's Lambda integration. API Gateway HTTP APIs accept 50 to 30000. | `number` | `12000` | no |
 | <a name="input_log_retention_days"></a> [log\_retention\_days](#input\_log\_retention\_days) | Retention in days of the access log group. | `number` | `30` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags merged onto every taggable resource, applied last. | `map(string)` | `{}` | no |
 | <a name="input_throttling"></a> [throttling](#input\_throttling) | Default stage throttling applied to every route: burst limit and steady-state requests per second. | <pre>object({<br/>    burst = optional(number, 100)<br/>    rate  = optional(number, 50)<br/>  })</pre> | `{}` | no |
