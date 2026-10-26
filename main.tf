@@ -32,7 +32,7 @@ module "this" {
       integration = {
         uri                    = route.lambda_arn
         payload_format_version = "2.0"
-        timeout_milliseconds   = 12000
+        timeout_milliseconds   = var.integration_timeout_ms
       }
     }
   }

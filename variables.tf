@@ -47,6 +47,16 @@ variable "routes" {
   }
 }
 
+variable "integration_timeout_ms" {
+  description = "Integration timeout in milliseconds applied to every route's Lambda integration. API Gateway HTTP APIs accept 50 to 30000."
+  type        = number
+  default     = 12000
+  validation {
+    condition     = var.integration_timeout_ms >= 50 && var.integration_timeout_ms <= 30000
+    error_message = "integration_timeout_ms must be between 50 and 30000."
+  }
+}
+
 variable "domain" {
   description = "Optional custom domain: name and the ARN of an ACM certificate in the API's region. DNS records are the caller's job (see domain_target and domain_hosted_zone_id outputs)."
   type = object({
