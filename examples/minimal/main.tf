@@ -27,6 +27,7 @@ data "aws_iam_policy_document" "assume" {
 resource "aws_iam_role" "lambda" {
   name               = "olensys-test-httpapi-fn"
   assume_role_policy = data.aws_iam_policy_document.assume.json
+  tags               = module.naming.tags
 }
 
 resource "aws_iam_role_policy_attachment" "basic" {
@@ -43,6 +44,7 @@ resource "aws_lambda_function" "this" {
   handler          = "handler.handler"
   filename         = data.archive_file.handler.output_path
   source_code_hash = data.archive_file.handler.output_base64sha256
+  tags             = module.naming.tags
 
   depends_on = [aws_iam_role_policy_attachment.basic]
 }
