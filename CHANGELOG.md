@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/Olensys/terraform-aws-http-api/compare/v1.2.0...v1.2.1) (2026-11-14)
+
+
+### Bug Fixes
+
+* tag the example's Lambda function and role through the naming module ([#11](https://github.com/Olensys/terraform-aws-http-api/issues/11)) ([3c1365b](https://github.com/Olensys/terraform-aws-http-api/commit/3c1365bd4f82f7edd4b4dd8b0b1edecc69f43a80))
+* tag the minimal example's resources through the naming module ([#9](https://github.com/Olensys/terraform-aws-http-api/issues/9)) ([9d8a057](https://github.com/Olensys/terraform-aws-http-api/commit/9d8a0577bc943a3c8fef0dc0b80076f7a8ee6cbe))
+
 ## [1.2.0](https://github.com/Olensys/terraform-aws-http-api/compare/v1.1.2...v1.2.0) (2026-10-26)
 
 
